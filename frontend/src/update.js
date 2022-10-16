@@ -3,20 +3,12 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Textarea from '@mui/joy/Textarea';
-import IconButton from '@mui/joy/IconButton';
-import Menu from '@mui/joy/Menu';
-import MenuItem from '@mui/joy/MenuItem';
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
-import FormatBold from '@mui/icons-material/FormatBold';
-import FormatItalic from '@mui/icons-material/FormatItalic';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import Check from '@mui/icons-material/Check';
+import { flexbox } from '@mui/system';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -29,58 +21,120 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.primary,
 }));
 
+const relativeTime = (current, previous) => {
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+         return Math.round(elapsed/1000) + ' seconds ago';   
+    } else if (elapsed < msPerHour) {
+         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    } else if (elapsed < msPerDay ) {
+         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    } else if (elapsed < msPerMonth) {
+        return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+    } else if (elapsed < msPerYear) {
+        return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+    } else {
+        return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+    }
+}
+
 const Comments = () => {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState('normal');
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [text, setText] = React.useState("");
+  const [author, setAuthor] = React.useState("");
+  const [comment, setComment] = React.useState("");
   const [data, setData] = useState([])
     React.useEffect(()=>{
         message()
     }, [])
     // when the dependency array (second arg of useEffect) change it's going to call message()
-    
-    const message = async () => {
-        const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
-        const response = await fetch(FLASK_ENDPOINT, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const data = await response.json();
-        setData(data) 
-    }
+
+
+
+const message = async () => {
+    const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
+    const response = await fetch(FLASK_ENDPOINT, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    const data = await response.json();
+    console.log(data);
+    setData(data);
+}
 
   return (
-      <>
-    {
-        data.map(comment => (
-<Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
-<StyledPaper
-    sx={{
-        my: 1,
-        mx: 'auto',
-        p: 2,
-    }}
->
-<Grid container wrap="nowrap" spacing={2}>
-<Grid item>
-<Avatar>W</Avatar>
-</Grid>
-<Grid item xs>
-<Typography>{JSON.stringify(comment)}</Typography>
-</Grid>
-</Grid>
-</StyledPaper>
-</Box>
-        ))
-    }
+    <>
+    <div sx={{ border: 1, height: '60%' }}>
+    {data && data.map(comment => (
+        <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
+        <StyledPaper
+            sx={{
+                my: 1,
+                mx: 'auto',
+                p: 2,
+            }}
+        >
+        <Grid container wrap="nowrap" spacing={2}>
+        <Grid item xs>
+        <Typography align="left" sx={{fontWeight: 'bold'}} >
+            {JSON.stringify(comment['author']).replace(/['"]+/g, '')}
+        </Typography>
+        <Typography align="left" sx={{fontWeight: 'light'}}>
+        {relativeTime(new Date().getTime(), parseFloat(comment['time_posted']))}
+        </Typography>
+        <Typography align="left">
+            {JSON.stringify(comment['comment_data']).replace(/['"]+/g, '')}
+        </Typography>
+        </Grid>
+        </Grid>
+        </StyledPaper>
+        </Box>
+    ))}
+    </div>
+    
+    <Box sx={{ border: 1 }}>
+    <FormControl>
+      <FormLabel>Author</FormLabel>
+      <Textarea
+        value={author}
+        onChange={(e)=>setAuthor(e.target.value)}
+        placeholder="Your name..."
+        minRows={3}
+        endDecorator={
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 'var(--Textarea-paddingBlock)',
+              pt: 'var(--Textarea-paddingBlock)',
+              borderTop: '1px solid',
+              borderColor: 'divider',
+              flex: 'auto',
+            }}
+          >
+          </Box>
+        }
+        sx={{
+          minWidth: 300,
+          fontWeight,
+          fontStyle: italic ? 'italic' : 'initial',
+        }}
+      />
+    </FormControl>
     <FormControl>
       <FormLabel>Your comment</FormLabel>
       <Textarea
-        value={text}
-        onChange={(e)=>setText(e.target.value)}
+        value={comment}
+        onChange={(e)=>setComment(e.target.value)}
         placeholder="Type something here…"
         minRows={3}
         endDecorator={
@@ -94,52 +148,11 @@ const Comments = () => {
               flex: 'auto',
             }}
           >
-            <IconButton
-              variant="plain"
-              color="neutral"
-              onClick={(event) => setAnchorEl(event.currentTarget)}
-            >
-              <FormatBold />
-              <KeyboardArrowDown fontSize="md" />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}
-              size="sm"
-              placement="bottom-start"
-              sx={{ '--List-decorator-size': '24px' }}
-            >
-              {['200', 'normal', 'bold'].map((weight) => (
-                <MenuItem
-                  key={weight}
-                  selected={fontWeight === weight}
-                  onClick={() => {
-                    setFontWeight(weight);
-                    setAnchorEl(null);
-                  }}
-                  sx={{ fontWeight: weight }}
-                >
-                  <ListItemDecorator>
-                    {fontWeight === weight && <Check fontSize="sm" />}
-                  </ListItemDecorator>
-                  {weight === '200' ? 'lighter' : weight}
-                </MenuItem>
-              ))}
-            </Menu>
-            <IconButton
-              variant={italic ? 'soft' : 'plain'}
-              color={italic ? 'primary' : 'neutral'}
-              aria-pressed={italic}
-              onClick={() => setItalic((bool) => !bool)}
-            >
-              <FormatItalic />
-            </IconButton>
             <Button sx={{ ml: 'auto' }}
               onClick={async () => {
                 const date = new Date();
-                const dateString = date.toISOString();
-                console.log(dateString);
+                // const dateString = date.toISOString();
+                const dateString = date.getTime().toString();
                 const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
                 const response = fetch(FLASK_ENDPOINT, {
                   method: "POST",
@@ -147,8 +160,8 @@ const Comments = () => {
                     "Content-Type": "application/json"
                   },  
                   body: JSON.stringify({
-                    'author': "sue",
-                    'comment_data': text,
+                    'author': author,
+                    'comment_data': comment,
                     'time_posted': dateString,
                     'num_likes': 5000,
                     'num_dislikes': 0,
@@ -157,14 +170,15 @@ const Comments = () => {
                 });
                 
                 setData([...data, {
-                    'author': "sue",
-                    'comment_data': text,
+                    'author': author,
+                    'comment_data': comment,
                     'time_posted': dateString,
                     'num_likes': 5000,
                     'num_dislikes': 0,
                     'group_time': 10
                   }]);
-                setText("");
+                setAuthor("")
+                setComment("")
 
               }}>Send</Button>
           </Box>
@@ -176,6 +190,8 @@ const Comments = () => {
         }}
       />
     </FormControl>
+    </Box>
+    
     </>
   );
 }
