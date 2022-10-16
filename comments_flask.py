@@ -25,7 +25,7 @@ CREATE TABLE comments (
   time_posted DATE, 
   num_likes INT, 
   num_dislikes INT,
-  group_time INT,
+  group_time INT
 )"
 """
 
