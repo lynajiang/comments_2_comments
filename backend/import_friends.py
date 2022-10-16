@@ -27,19 +27,19 @@ with open("friends_episodes_v3.csv", "r", encoding="ISO-8859-1") as f:
   
     # Print the column names
     first_line = lines[0].strip().split(',')
-    print(first_line[0], first_line[1], first_line[2], \
-    first_line[3], first_line[4], first_line[5], first_line[6], \
+    print(first_line[0], first_line[1], first_line[2],
+    first_line[3], first_line[4], first_line[5], first_line[6],
          first_line[7], first_line[8])
   
     for line in lines[1:]:
         parts = line.strip().split(',')
       
         print(first_line[0], first_line[1], first_line[2], \
-    first_line[3], first_line[4], first_line[5], first_line[6], \
+    first_line[3], first_line[4], first_line[5], first_line[6],
          first_line[7], first_line[8])
 
         cursor.execute(
-            "INSERT INTO netflix_titles VALUES (%d, %d, %d, %s, %d, %s, %s, %s, %s, %d, %d)",
-            (first_line[0], first_line[1], first_line[2], \
-    first_line[3], first_line[4], first_line[5], first_line[6], \
+            "INSERT INTO netflix_titles VALUES (%d, %d, %d, %s, %d, %s, %s, %d, %d)",
+            (first_line[0], first_line[1], first_line[2],
+    first_line[3], first_line[4], first_line[5], first_line[6],
          first_line[7], first_line[8]))
