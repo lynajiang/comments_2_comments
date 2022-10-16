@@ -22,7 +22,7 @@ CREATE TABLE comments (
   id SERIAL PRIMARY KEY, 
   author STRING, 
   comment_data STRING, 
-  time_posted DATE, 
+  time_posted FLOAT, 
   num_likes INT, 
   num_dislikes INT,
   group_time INT
@@ -50,10 +50,10 @@ def db_filter_comments(group):
     return result
 
 
-def db_create_comment(author, comment_data, time_posted, num_likes, num_dislikes, group):
+def db_create_comment(author, comment_data, time_posted, num_likes, num_dislikes, group_time):
     cursor.execute(
-        "INSERT INTO comments (author, comment_data, time_posted, num_likes, num_dislikes, group) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
-        (author, comment_data, time_posted, num_likes, num_dislikes))
+        "INSERT INTO comments (author, comment_data, time_posted, num_likes, num_dislikes, group_time) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+        (author, comment_data, time_posted, num_likes, num_dislikes, group_time))
     result = cursor.fetchall()
     return result
 
@@ -126,8 +126,22 @@ def delete_comment(id):
         return jsonify({"error": str(e)})
 
 # scary database stuff above
+@app.route("/create", methods=['GET'])
+def create_table():
+    cursor.execute("""
+    CREATE TABLE comments (
+    id SERIAL PRIMARY KEY, 
+    author STRING, 
+    comment_data STRING, 
+    time_posted FLOAT, 
+    num_likes INT, 
+    num_dislikes INT,
+    group_time INT
+    );
+    """)
+    return "ok"
 
-
+    
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co
 # ex. Mine deploys to https://htn-api.jayantsh.repl.co.
-app.run(host="0.0.0.0", debug=True)
+app.run(host="0.0.0.0", debug=True, port=5646)
