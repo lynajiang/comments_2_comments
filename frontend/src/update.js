@@ -8,9 +8,7 @@ import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Textarea from '@mui/joy/Textarea';
-import { flexbox } from '@mui/system';
 import { useState } from 'react';
-import { useEffect } from 'react';
 
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -20,6 +18,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     maxWidth: 400,
     color: theme.palette.text.primary,
 }));
+
 
 const relativeTime = (current, previous) => {
     var msPerMinute = 60 * 1000;
@@ -74,7 +73,7 @@ const message = async () => {
 
   return (
     <>
-    <div sx={{ border: 1, height: '60%' }}>
+    <Box>
     {data && data.map(comment => (
         <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
         <StyledPaper
@@ -86,10 +85,10 @@ const message = async () => {
         >
         <Grid container wrap="nowrap" spacing={2}>
         <Grid item xs>
-        <Typography align="left" sx={{fontWeight: 'bold'}} >
+        <Typography align="left" sx={{fontWeight: 'bold', fontSize: 14}} >
             {JSON.stringify(comment['author']).replace(/['"]+/g, '')}
         </Typography>
-        <Typography align="left" sx={{fontWeight: 'light'}}>
+        <Typography align="left" sx={{fontWeight: 'light', fontSize: 12}}>
         {relativeTime(new Date().getTime(), parseFloat(comment['time_posted']))}
         </Typography>
         <Typography align="left">
@@ -100,9 +99,9 @@ const message = async () => {
         </StyledPaper>
         </Box>
     ))}
-    </div>
+    </Box>
     
-    <Box sx={{ border: 1 }}>
+    <Box>
     <FormControl>
       <FormLabel>Author</FormLabel>
       <Textarea
