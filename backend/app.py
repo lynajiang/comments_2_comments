@@ -30,7 +30,23 @@ CREATE TABLE comments (
   num_dislikes INT,
   group_time INT
 )"
+
+CREATE TABLE netflix (
+    name STRING,
+    season_num INT,
+    episode_num INT,
+    episode_name STRING,
+    duration INT
+)"
+
+CREATE TABLE friends (year_of_prod INT, season_num INT, \
+    episode_num INT, episode_title STRING, \
+    duration INT, summary STRING, director STRING, num_stars INT, \
+    num_votes INT
+
+)"
 """
+
 
 
 def db_get_all():
@@ -38,9 +54,23 @@ def db_get_all():
     results = cursor.fetchall()
     return results
 
+def db_get_all_netflix():
+    cursor.execute('SELECT * FROM netflix')
+    results = cursor.fetchall()
+    return results
+
+def db_get_all_friends():
+    cursor.execute('SELECT * FROM friends')
+    results = cursor.fetchall()
+    return results
 
 def db_get_by_id(id):
     cursor.execute('SELECT * FROM comments WHERE id = %s', (id, ))
+    result = cursor.fetchone()
+    return result
+
+def db_get_by_netflix_name(name):
+    cursor.execute('SELECT * FROM netflix WHERE name = %s' (name, ))
     result = cursor.fetchone()
     return result
 
@@ -79,6 +109,16 @@ def db_delete_comment(id):
 @cross_origin()
 def index():
     return jsonify(db_get_all())
+
+@app.route('/netflix', methods=['GET'])
+@cross_origin()
+def index_netflix():
+    return jsonify(db_get_all_netflix())
+
+@app.route('/friends', methods=['GET'])
+@cross_origin()
+def index_friends():
+    return jsonify(db_get_all_friends())
 
 
 @app.route("/<id>", methods=['GET'])
@@ -135,9 +175,9 @@ def delete_comment(id):
         return jsonify({"error": str(e)})
 
 # scary database stuff above
-@app.route("/create", methods=['GET'])
+@app.route("/create_comments", methods=['GET'])
 @cross_origin()
-def create_table():
+def create_table_comments():
     cursor.execute("""
     CREATE TABLE comments (
     id SERIAL PRIMARY KEY, 
@@ -151,6 +191,29 @@ def create_table():
     """)
     return "ok"
 
+@app.route("/create_netflix", methods=['GET'])
+@cross_origin()
+def create_table_netflix():
+    cursor.execute("""
+    "CREATE TABLE netflix_titles (show_id SERIAL PRIMARY KEY, \
+    type STRING, title STRING, \
+    director STRING, cast_cast STRING, \
+    country STRING, rating STRING, release_year INT, duration STRING);""")
+
+    return "ok netflix"
+
+@cross_origin()
+def create_table_friends():
+    cursor.execute("""
+     "CREATE TABLE friends_data (year_of_prod INT, season_num INT, \
+    episode_num INT, episode_title STRING, \
+    duration INT, summary STRING, director STRING, num_stars INT, \
+    num_votes INT);""")
+
+    return "ok friends"
+
+
+    
     
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co
 # ex. Mine deploys to https://htn-api.jayantsh.repl.co.

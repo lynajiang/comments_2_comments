@@ -3,20 +3,12 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/joy/Button';
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import Textarea from '@mui/joy/Textarea';
-import IconButton from '@mui/joy/IconButton';
-import Menu from '@mui/joy/Menu';
-import MenuItem from '@mui/joy/MenuItem';
-import ListItemDecorator from '@mui/joy/ListItemDecorator';
-import FormatBold from '@mui/icons-material/FormatBold';
-import FormatItalic from '@mui/icons-material/FormatItalic';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import Check from '@mui/icons-material/Check';
+import { flexbox } from '@mui/system';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -82,32 +74,35 @@ const message = async () => {
 
   return (
     <>
+    <Box sx={{ height: "10"}}>
     {data && data.map(comment => (
-<Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
-<StyledPaper
-    sx={{
-        my: 1,
-        mx: 'auto',
-        p: 2,
-    }}
->
-<Grid container wrap="nowrap" spacing={2}>
-<Grid item xs>
-<Typography align="left" sx={{fontWeight: 'bold'}} >
-    {JSON.stringify(comment['author']).replace(/['"]+/g, '')}
-</Typography>
-<Typography align="left" sx={{fontWeight: 'light'}}>
-{relativeTime(new Date().getTime(), parseFloat(comment['time_posted']))}
-</Typography>
-<Typography align="left">
-    {JSON.stringify(comment['comment_data']).replace(/['"]+/g, '')}
-</Typography>
-</Grid>
-</Grid>
-</StyledPaper>
-</Box>
-        ))
-    }
+        <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
+        <StyledPaper
+            sx={{
+                my: 1,
+                mx: 'auto',
+                p: 2,
+            }}
+        >
+        <Grid container wrap="nowrap" spacing={2}>
+        <Grid item xs>
+        <Typography align="left" sx={{fontWeight: 'bold'}} >
+            {JSON.stringify(comment['author']).replace(/['"]+/g, '')}
+        </Typography>
+        <Typography align="left" sx={{fontWeight: 'light'}}>
+        {relativeTime(new Date().getTime(), parseFloat(comment['time_posted']))}
+        </Typography>
+        <Typography align="left">
+            {JSON.stringify(comment['comment_data']).replace(/['"]+/g, '')}
+        </Typography>
+        </Grid>
+        </Grid>
+        </StyledPaper>
+        </Box>
+    ))}
+    </Box>
+    
+    <Box position="fixed" bottom="0">
     <FormControl>
       <FormLabel>Author</FormLabel>
       <Textarea
@@ -153,47 +148,6 @@ const message = async () => {
               flex: 'auto',
             }}
           >
-            <IconButton
-              variant="plain"
-              color="neutral"
-              onClick={(event) => setAnchorEl(event.currentTarget)}
-            >
-              <FormatBold />
-              <KeyboardArrowDown fontSize="md" />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={() => setAnchorEl(null)}
-              size="sm"
-              placement="bottom-start"
-              sx={{ '--List-decorator-size': '24px' }}
-            >
-              {['200', 'normal', 'bold'].map((weight) => (
-                <MenuItem
-                  key={weight}
-                  selected={fontWeight === weight}
-                  onClick={() => {
-                    setFontWeight(weight);
-                    setAnchorEl(null);
-                  }}
-                  sx={{ fontWeight: weight }}
-                >
-                  <ListItemDecorator>
-                    {fontWeight === weight && <Check fontSize="sm" />}
-                  </ListItemDecorator>
-                  {weight === '200' ? 'lighter' : weight}
-                </MenuItem>
-              ))}
-            </Menu>
-            <IconButton
-              variant={italic ? 'soft' : 'plain'}
-              color={italic ? 'primary' : 'neutral'}
-              aria-pressed={italic}
-              onClick={() => setItalic((bool) => !bool)}
-            >
-              <FormatItalic />
-            </IconButton>
             <Button sx={{ ml: 'auto' }}
               onClick={async () => {
                 const date = new Date();
@@ -236,6 +190,8 @@ const message = async () => {
         }}
       />
     </FormControl>
+    </Box>
+    
     </>
   );
 }
