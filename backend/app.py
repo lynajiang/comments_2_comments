@@ -31,7 +31,7 @@ CREATE TABLE comments (
   group_time INT
 )"
 
-CREATE TABLE netflix (
+CREATE TABLE netflix_titles (
     name STRING,
     season_num INT,
     episode_num INT,
@@ -39,7 +39,7 @@ CREATE TABLE netflix (
     duration INT
 )"
 
-CREATE TABLE friends (year_of_prod INT, season_num INT, \
+CREATE TABLE friends_data (year_of_prod INT, season_num INT, \
     episode_num INT, episode_title STRING, \
     duration INT, summary STRING, director STRING, num_stars INT, \
     num_votes INT
@@ -55,12 +55,12 @@ def db_get_all():
     return results
 
 def db_get_all_netflix():
-    cursor.execute('SELECT * FROM netflix')
+    cursor.execute('SELECT * FROM netflix_titles')
     results = cursor.fetchall()
     return results
 
 def db_get_all_friends():
-    cursor.execute('SELECT * FROM friends')
+    cursor.execute('SELECT * FROM friends_data')
     results = cursor.fetchall()
     return results
 
@@ -70,7 +70,7 @@ def db_get_by_id(id):
     return result
 
 def db_get_by_netflix_name(name):
-    cursor.execute('SELECT * FROM netflix WHERE name = %s' (name, ))
+    cursor.execute('SELECT * FROM netflix_titles WHERE name = %s', (name, ))
     result = cursor.fetchone()
     return result
 
@@ -191,26 +191,26 @@ def create_table_comments():
     """)
     return "ok"
 
-@app.route("/create_netflix", methods=['GET'])
-@cross_origin()
-def create_table_netflix():
-    cursor.execute("""
-    "CREATE TABLE netflix_titles (show_id SERIAL PRIMARY KEY, \
-    type STRING, title STRING, \
-    director STRING, cast_cast STRING, \
-    country STRING, rating STRING, release_year INT, duration STRING);""")
+# @app.route("/create_netflix", methods=['GET'])
+# @cross_origin()
+# def create_table_netflix():
+#     cursor.execute("""
+#     CREATE TABLE netflix_titles (show_id SERIAL PRIMARY KEY, \
+#     type STRING, title STRING, \
+#     director STRING, cast_cast STRING, \
+#     country STRING, rating STRING, release_year INT, duration STRING);""")
 
-    return "ok netflix"
+#     return "ok netflix"
 
-@cross_origin()
-def create_table_friends():
-    cursor.execute("""
-     "CREATE TABLE friends_data (year_of_prod INT, season_num INT, \
-    episode_num INT, episode_title STRING, \
-    duration INT, summary STRING, director STRING, num_stars INT, \
-    num_votes INT);""")
+# @cross_origin()
+# def create_table_friends():
+#     cursor.execute("""
+#     CREATE TABLE friends_data (year_of_prod INT, season_num INT, \
+#     episode_num INT, episode_title STRING, \
+#     duration INT, summary STRING, director STRING, num_stars INT, \
+#     num_votes INT);""")
 
-    return "ok friends"
+#     return "ok friends"
 
 
     
