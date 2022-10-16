@@ -2,6 +2,7 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
+import Slider from '@mui/material/Slider';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/joy/Button';
@@ -44,12 +45,17 @@ const relativeTime = (current, previous) => {
     }
 }
 
+const minSec = (value) => {
+    return `${Math.floor(value / 60)}:${value % 60}`
+}
+  
 const Comments = () => {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState('normal');
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [author, setAuthor] = React.useState("");
   const [comment, setComment] = React.useState("");
+  const [time, setTime] = React.useState(0);
   const [data, setData] = useState([])
     React.useEffect(()=>{
         message()
@@ -67,7 +73,6 @@ const message = async () => {
         }
     });
     const data = await response.json();
-    console.log(data);
     setData(data);
 }
 
@@ -162,7 +167,7 @@ const message = async () => {
                     'author': author,
                     'comment_data': comment,
                     'time_posted': dateString,
-                    'num_likes': 5000,
+                    'num_likes': time,
                     'num_dislikes': 0,
                     'group_time': 10
                   })
@@ -172,7 +177,7 @@ const message = async () => {
                     'author': author,
                     'comment_data': comment,
                     'time_posted': dateString,
-                    'num_likes': 5000,
+                    'num_likes': time,
                     'num_dislikes': 0,
                     'group_time': 10
                   }]);
@@ -190,7 +195,22 @@ const message = async () => {
       />
     </FormControl>
     </Box>
-    
+    <Box width={300}>
+        <Slider
+          onChange={(e)=>{
+              console.log(e.target.value)
+            setTime((e.target.value))
+            }
+          }
+          step={1}
+          aria-label="Time"
+          defaultValue={0}
+          valueLabelFormat={`${Math.floor(time / 60)}:${time % 60}`}
+          min={0}
+          valueLabelDisplay='on'
+          max={1320}
+        />
+      </Box>
     </>
   );
 }
