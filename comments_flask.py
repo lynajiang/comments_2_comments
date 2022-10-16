@@ -18,63 +18,55 @@ connection.set_session(autocommit=True)
 
 cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 """
-CREATE TABLE airbnbs (
+CREATE TABLE comments (
   id SERIAL PRIMARY KEY, 
-  title STRING, 
-  neighbourhood_group STRING, 
-  neighbourhood STRING, 
-  host_name STRING, 
-  verified BOOL, 
-  year INT
+  author STRING, 
+  comment_data STRING, 
+  time_posted DATE, 
+  num_likes INT, 
+  num_dislikes INT,
+  group_time INT,
 )"
 """
 
-#id SERIAL PRIMARY KEY, 
-  # author STRING, 
-  # comment_data STRING, 
-  # time_posted DATE, 
-  # num_likes INT, 
-  # num_dislikes INT,
-  # group_time INT,
 
 def db_get_all():
-    cursor.execute('SELECT * FROM airbnbs')
+    cursor.execute('SELECT * FROM comments')
     results = cursor.fetchall()
     return results
 
 
 def db_get_by_id(id):
-    cursor.execute('SELECT * FROM airbnbs WHERE id = %s', (id, ))
+    cursor.execute('SELECT * FROM comments WHERE id = %s', (id, ))
     result = cursor.fetchone()
     return result
 
 
-def db_filter_listings(min_year, group):
+def db_filter_comments(group):
     cursor.execute(
-        'SELECT * FROM airbnbs WHERE neighbourhood_group = %s AND year >= %s',
-        (group, min_year))
+        'SELECT * FROM comments WHERE group = %s',
+        (id, group))
     result = cursor.fetchall()
     return result
 
 
-def db_create_airbnb(title, name, neighbourhood, neighbourhood_group, verified,
-                     year):
+def db_create_comment(author, comment_data, time_posted, num_likes, num_dislikes, group):
     cursor.execute(
-        "INSERT INTO airbnbs (title, host_name, neighbourhood, neighbourhood_group, verified, year) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
-        (title, name, neighbourhood, neighbourhood_group, verified, year))
+        "INSERT INTO comments (author, comment_data, time_posted, num_likes, num_dislikes, group) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+        (author, comment_data, time_posted, num_likes, num_dislikes))
     result = cursor.fetchall()
     return result
 
 
-def db_update_title(id, new_title):
-    cursor.execute("UPDATE airbnbs SET title = %s WHERE id = %s RETURNING id",
-                   (new_title, id))
+def db_update_comment(id, new_comment_data):
+    cursor.execute("UPDATE COMMENT SET comment = %s WHERE id = %s RETURNING id",
+                   (new_comment_data, id))
     result = cursor.fetchall()
     return result
 
 
-def db_delete_listing(id):
-    cursor.execute("DELETE FROM airbnbs WHERE id = %s RETURNING id", (id, ))
+def db_delete_comment(id):
+    cursor.execute("DELETE FROM comments WHERE id = %s RETURNING id", (id, ))
     result = cursor.fetchall()
     return result
 
@@ -87,27 +79,29 @@ def index():
 
 @app.route("/<id>", methods=['GET'])
 def get_by_id(id):
-    airbnb = db_get_by_id(id)
-    if not airbnb:
+    comment = db_get_by_id(id)
+    if not comment:
         return jsonify({"error": "invalid id", "code": 404})
-    return jsonify(airbnb)
+    return jsonify(comment)
 
 
 @app.route("/search", methods=['GET'])
-def filter_listings():
-    result = db_filter_listings(int(request.args.get('min_year')),
+def filter_comments():
+    result = db_filter_comments(
                                 request.args.get('group'))
     return jsonify(result)
 
 
 @app.route("/", methods=['POST'])
-def create_airbnb():
-    new_airbnb = request.json
+def create_comment():
+    new_comment = request.json
     try:
-        res = db_create_airbnb(new_airbnb['title'], new_airbnb['name'],
-                               new_airbnb['neighbourhood'],
-                               new_airbnb['neighbourhood_group'],
-                               new_airbnb['verified'], new_airbnb['year'])
+        res = db_create_comment(new_comment['author'],
+                                new_comment['comment_data'],
+                                new_comment['time_posted'],
+                                new_comment['num_likes'],
+                                new_comment['num_dislikes'],
+                                new_comment['group_time'])
         return jsonify(res)
 
     except Exception as e:
@@ -115,21 +109,23 @@ def create_airbnb():
 
 
 @app.route("/<id>", methods=['PUT'])
-def update_title(id):
+def update_comment(id):
     try:
-        title = request.json['title']
+        comment = request.json['comment_data']
       
-        return jsonify(db_update_title(id, title))
+        return jsonify(db_update_comment(id, comment))
     except Exception as e:
         return jsonify({"error": str(e)})
 
 
 @app.route("/<id>", methods=['DELETE'])
-def delete_book(id):
+def delete_comment(id):
     try:
-        return jsonify(db_delete_listing(id))
+        return jsonify(db_delete_comment(id))
     except Exception as e:
         return jsonify({"error": str(e)})
+
+# scary database stuff above
 
 
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co
