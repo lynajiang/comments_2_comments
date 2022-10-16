@@ -160,22 +160,29 @@ def create_table_comments():
     """)
     return "ok"
 
-# @app.route("/create_shows", methods=['GET'])
-# @cross_origin()
-# def create_table_comments():
-#     cursor.execute("""
-#     CREATE TABLE comments (
-#     id SERIAL PRIMARY KEY, 
-#     author STRING, 
-#     comment_data STRING, 
-#     time_posted STRING, 
-#     num_likes INT, 
-#     num_dislikes INT,
-#     group_time INT
-#     );
-#     """)
-#     return "ok"
+@app.route("/create_netflix", methods=['GET'])
+@cross_origin()
+def create_table_netflix():
+    cursor.execute("""
+    "CREATE TABLE netflix_titles (show_id SERIAL PRIMARY KEY, \
+    type STRING, title STRING, \
+    director STRING, cast_cast STRING, \
+    country STRING, rating FLOAT, release_year INT, duration STRING);""")
 
+    return "ok netflix"
+
+@cross_origin()
+def create_table_friends():
+    cursor.execute("""
+     "CREATE TABLE friends_data (year_of_prod INT, season_num INT, \
+    episode_num INT, episode_title STRING, \
+    duration INT, summary STRING, director STRING, num_stars INT, \
+    num_votes INT);""")
+
+    return "ok friends"
+
+
+    
     
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co
 # ex. Mine deploys to https://htn-api.jayantsh.repl.co.
