@@ -29,33 +29,60 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.primary,
 }));
 
+const relativeTime = (current, previous) => {
+    var msPerMinute = 60 * 1000;
+    var msPerHour = msPerMinute * 60;
+    var msPerDay = msPerHour * 24;
+    var msPerMonth = msPerDay * 30;
+    var msPerYear = msPerDay * 365;
+
+    var elapsed = current - previous;
+
+    if (elapsed < msPerMinute) {
+         return Math.round(elapsed/1000) + ' seconds ago';   
+    } else if (elapsed < msPerHour) {
+         return Math.round(elapsed/msPerMinute) + ' minutes ago';   
+    } else if (elapsed < msPerDay ) {
+         return Math.round(elapsed/msPerHour ) + ' hours ago';   
+    } else if (elapsed < msPerMonth) {
+        return 'approximately ' + Math.round(elapsed/msPerDay) + ' days ago';   
+    } else if (elapsed < msPerYear) {
+        return 'approximately ' + Math.round(elapsed/msPerMonth) + ' months ago';   
+    } else {
+        return 'approximately ' + Math.round(elapsed/msPerYear ) + ' years ago';   
+    }
+}
+
 const Comments = () => {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState('normal');
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [text, setText] = React.useState("");
+  const [author, setAuthor] = React.useState("");
+  const [comment, setComment] = React.useState("");
   const [data, setData] = useState([])
     React.useEffect(()=>{
         message()
     }, [])
     // when the dependency array (second arg of useEffect) change it's going to call message()
-    
-    const message = async () => {
-        const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
-        const response = await fetch(FLASK_ENDPOINT, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const data = await response.json();
-        setData(data) 
-    }
+
+
+
+const message = async () => {
+    const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
+    const response = await fetch(FLASK_ENDPOINT, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    const data = await response.json();
+    console.log(data);
+    setData(data);
+}
 
   return (
-      <>
-    {
-        data.map(comment => (
+    <>
+    {data && data.map(comment => (
 <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
 <StyledPaper
     sx={{
@@ -65,11 +92,16 @@ const Comments = () => {
     }}
 >
 <Grid container wrap="nowrap" spacing={2}>
-<Grid item>
-<Avatar>W</Avatar>
-</Grid>
 <Grid item xs>
-<Typography>{JSON.stringify(comment)}</Typography>
+<Typography align="left" sx={{fontWeight: 'bold'}} >
+    {JSON.stringify(comment['author']).replace(/['"]+/g, '')}
+</Typography>
+<Typography align="left" sx={{fontWeight: 'light'}}>
+{relativeTime(new Date().getTime(), parseFloat(comment['time_posted']))}
+</Typography>
+<Typography align="left">
+    {JSON.stringify(comment['comment_data']).replace(/['"]+/g, '')}
+</Typography>
 </Grid>
 </Grid>
 </StyledPaper>
@@ -77,10 +109,37 @@ const Comments = () => {
         ))
     }
     <FormControl>
+      <FormLabel>Author</FormLabel>
+      <Textarea
+        value={author}
+        onChange={(e)=>setAuthor(e.target.value)}
+        placeholder="Your name..."
+        minRows={3}
+        endDecorator={
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 'var(--Textarea-paddingBlock)',
+              pt: 'var(--Textarea-paddingBlock)',
+              borderTop: '1px solid',
+              borderColor: 'divider',
+              flex: 'auto',
+            }}
+          >
+          </Box>
+        }
+        sx={{
+          minWidth: 300,
+          fontWeight,
+          fontStyle: italic ? 'italic' : 'initial',
+        }}
+      />
+    </FormControl>
+    <FormControl>
       <FormLabel>Your comment</FormLabel>
       <Textarea
-        value={text}
-        onChange={(e)=>setText(e.target.value)}
+        value={comment}
+        onChange={(e)=>setComment(e.target.value)}
         placeholder="Type something here…"
         minRows={3}
         endDecorator={
@@ -138,8 +197,8 @@ const Comments = () => {
             <Button sx={{ ml: 'auto' }}
               onClick={async () => {
                 const date = new Date();
-                const dateString = date.toISOString();
-                console.log(dateString);
+                // const dateString = date.toISOString();
+                const dateString = date.getTime().toString();
                 const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
                 const response = fetch(FLASK_ENDPOINT, {
                   method: "POST",
@@ -147,8 +206,8 @@ const Comments = () => {
                     "Content-Type": "application/json"
                   },  
                   body: JSON.stringify({
-                    'author': "sue",
-                    'comment_data': text,
+                    'author': author,
+                    'comment_data': comment,
                     'time_posted': dateString,
                     'num_likes': 5000,
                     'num_dislikes': 0,
@@ -157,14 +216,15 @@ const Comments = () => {
                 });
                 
                 setData([...data, {
-                    'author': "sue",
-                    'comment_data': text,
+                    'author': author,
+                    'comment_data': comment,
                     'time_posted': dateString,
                     'num_likes': 5000,
                     'num_dislikes': 0,
                     'group_time': 10
                   }]);
-                setText("");
+                setAuthor("")
+                setComment("")
 
               }}>Send</Button>
           </Box>
