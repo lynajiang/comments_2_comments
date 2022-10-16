@@ -36,7 +36,7 @@ with open("netflix_titles.csv", "r") as f:
          first_line[7], first_line[8], first_line[9])
 
         cursor.execute(
-            "INSERT INTO netflix_titles VALUES (%s, %s, %s, %s, %s, %s, %s, %d, %s)",
+            "INSERT INTO netflix_titles VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
             (first_line[0], first_line[1], first_line[2],
         first_line[3], first_line[4], first_line[5],
          first_line[7], first_line[8], first_line[9]))
