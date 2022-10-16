@@ -19,7 +19,7 @@ cursor.execute(
     "CREATE TABLE netflix_titles (show_id SERIAL PRIMARY KEY, \
     type STRING, title STRING, \
     director STRING, cast_cast STRING, \
-    country STRING, rating FLOAT, release_year INT, duration STRING)"
+    country STRING, rating STRING, release_year INT, duration STRING)"
 )
 
 with open("netflix_titles.csv", "r") as f:
