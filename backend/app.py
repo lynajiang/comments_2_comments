@@ -30,7 +30,16 @@ CREATE TABLE comments (
   num_dislikes INT,
   group_time INT
 )"
+
+CREATE TABLE times_of_shows (
+    name STRING,
+    season_num INT,
+    episode_num INT,
+    episode_name STRING,
+    duration INT
+)
 """
+
 
 
 def db_get_all():
@@ -135,9 +144,9 @@ def delete_comment(id):
         return jsonify({"error": str(e)})
 
 # scary database stuff above
-@app.route("/create", methods=['GET'])
+@app.route("/create_comments", methods=['GET'])
 @cross_origin()
-def create_table():
+def create_table_comments():
     cursor.execute("""
     CREATE TABLE comments (
     id SERIAL PRIMARY KEY, 
@@ -150,6 +159,9 @@ def create_table():
     );
     """)
     return "ok"
+
+@app.route("/create_shows", methods=['GET'])
+@cross_origin()
 
     
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co
