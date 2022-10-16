@@ -80,13 +80,20 @@ const TypeComment = () => {
             </IconButton>
             <Button sx={{ ml: 'auto' }}
               onClick={async () => {
-                const FLASK_ENDPOINT = "localhost:5000/"
+                const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
                 const response = fetch(FLASK_ENDPOINT, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json"
                   },  
-                  body: JSON.stringify({'comment_data': text})
+                  body: JSON.stringify({
+                    'author': "sue",
+                    'comment_data': text,
+                    'time_posted': 12,
+                    'num_likes': 5000,
+                    'num_dislikes': 0,
+                    'group_time': 10
+                  })
                   // implement timestamp
                 });
               }}>Send</Button>

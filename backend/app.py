@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 import json
 import os
 import psycopg2
@@ -6,6 +7,8 @@ import psycopg2.extras
 
 # Create a Flask server.
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Create a cursor and initialize psycopg
 pg_conn_string = os.environ["PG_CONN_STRING"]
@@ -73,11 +76,13 @@ def db_delete_comment(id):
 
 # Routes!
 @app.route('/', methods=['GET'])
+@cross_origin()
 def index():
     return jsonify(db_get_all())
 
 
 @app.route("/<id>", methods=['GET'])
+@cross_origin()
 def get_by_id(id):
     comment = db_get_by_id(id)
     if not comment:
@@ -86,6 +91,7 @@ def get_by_id(id):
 
 
 @app.route("/search", methods=['GET'])
+@cross_origin()
 def filter_comments():
     result = db_filter_comments(
                                 request.args.get('group'))
@@ -93,6 +99,7 @@ def filter_comments():
 
 
 @app.route("/", methods=['POST'])
+@cross_origin()
 def create_comment():
     new_comment = request.json
     try:
@@ -109,6 +116,7 @@ def create_comment():
 
 
 @app.route("/<id>", methods=['PUT'])
+@cross_origin()
 def update_comment(id):
     try:
         comment = request.json['comment_data']
@@ -119,6 +127,7 @@ def update_comment(id):
 
 
 @app.route("/<id>", methods=['DELETE'])
+@cross_origin()
 def delete_comment(id):
     try:
         return jsonify(db_delete_comment(id))
@@ -127,6 +136,7 @@ def delete_comment(id):
 
 # scary database stuff above
 @app.route("/create", methods=['GET'])
+@cross_origin()
 def create_table():
     cursor.execute("""
     CREATE TABLE comments (

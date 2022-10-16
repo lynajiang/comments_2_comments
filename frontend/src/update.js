@@ -25,7 +25,7 @@ const Comments = () => {
     }, [])
     
     const message = async () => {
-        const FLASK_ENDPOINT = "localhost:5000/"
+        const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
         const response = await fetch(FLASK_ENDPOINT, {
             method: "GET",
             headers: {
@@ -33,7 +33,7 @@ const Comments = () => {
             }
         });
         const data = await response.json();
-        setData(data)
+        setData(data) 
     }
     
     return (
@@ -50,7 +50,7 @@ const Comments = () => {
         <Avatar>W</Avatar>
         </Grid>
         <Grid item xs>
-        <Typography>{data !== undefined && data}</Typography>
+        <Typography>{data !== undefined && JSON.stringify(data)}</Typography>
         </Grid>
         </Grid>
         </StyledPaper>
