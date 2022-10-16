@@ -24,6 +24,7 @@ cursor = connection.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 CREATE TABLE comments (
   id SERIAL PRIMARY KEY, 
   author STRING, 
+  show_id STRING,
   comment_data STRING, 
   time_posted STRING, 
   num_likes INT, 
@@ -83,10 +84,10 @@ def db_filter_comments(group):
     return result
 
 
-def db_create_comment(author, comment_data, time_posted, num_likes, num_dislikes, group_time):
+def db_create_comment(author, show_id, comment_data, time_posted, num_likes, num_dislikes, group_time):
     cursor.execute(
-        "INSERT INTO comments (author, comment_data, time_posted, num_likes, num_dislikes, group_time) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
-        (author, comment_data, time_posted, num_likes, num_dislikes, group_time))
+        "INSERT INTO comments (author, show_id, comment_data, time_posted, num_likes, num_dislikes, group_time) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
+        (author, show_id, comment_data, time_posted, num_likes, num_dislikes, group_time))
     result = cursor.fetchall()
     return result
 
@@ -144,6 +145,7 @@ def create_comment():
     new_comment = request.json
     try:
         res = db_create_comment(new_comment['author'],
+                                new_comment['show_id'],
                                 new_comment['comment_data'],
                                 new_comment['time_posted'],
                                 new_comment['num_likes'],
