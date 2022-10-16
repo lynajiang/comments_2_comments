@@ -75,6 +75,10 @@ def db_get_by_netflix_name(name):
     result = cursor.fetchone()
     return result
 
+def db_get_by_friends_name(season_num, episode_num):
+    cursor.execute('SELECT * FROM friends_data WHERE season_num = %s AND episode_num = %s', (season_num, episode_num, ))
+    result = cursor.fetchone()
+    return result
 
 def db_filter_comments(group):
     cursor.execute(
@@ -126,6 +130,15 @@ def index_friends():
 @cross_origin()
 def get_by_id(id):
     comment = db_get_by_id(id)
+    if not comment:
+        return jsonify({"error": "invalid id", "code": 404})
+    return jsonify(comment)
+
+
+@app.route("/friends/<season_num>?<episode_num>", methods=['GET'])
+@cross_origin()
+def get_by_id(season_num, episode_num):
+    comment = db_get_by_friends_name(season_num, episode_num)
     if not comment:
         return jsonify({"error": "invalid id", "code": 404})
     return jsonify(comment)
