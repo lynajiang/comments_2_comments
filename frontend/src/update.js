@@ -74,7 +74,7 @@ const message = async () => {
 
   return (
     <>
-    <Box sx={{ height: "10"}}>
+    <div sx={{ border: 1, height: '60%' }}>
     {data && data.map(comment => (
         <Box sx={{ flexGrow: 1, overflow: 'hidden', px: 3 }}>
         <StyledPaper
@@ -100,9 +100,9 @@ const message = async () => {
         </StyledPaper>
         </Box>
     ))}
-    </Box>
+    </div>
     
-    <Box position="fixed" bottom="0">
+    <Box sx={{ border: 1 }}>
     <FormControl>
       <FormLabel>Author</FormLabel>
       <Textarea
