@@ -163,7 +163,9 @@ const Comments = () => {
                     'num_likes': 5000,
                     'num_dislikes': 0,
                     'group_time': 10
-                  }])
+                  }]);
+                setText("");
+
               }}>Send</Button>
           </Box>
         }

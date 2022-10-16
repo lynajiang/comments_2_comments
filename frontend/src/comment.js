@@ -97,8 +97,8 @@ const TypeComment = () => {
                     'num_dislikes': 0,
                     'group_time': 10
                   })
-                  // implement timestamp
                 });
+                value = "";
               }}>Send</Button>
           </Box>
         }
