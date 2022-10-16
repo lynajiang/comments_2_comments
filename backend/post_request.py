@@ -1,11 +1,11 @@
 import requests
 import json
-import time
+from datetime import date
 
 new_comment_1 = {
   'author' : 'lyna', 
   'comment_data' : 'hihi', 
-  'time_posted' : time.time(), 
+  'time_posted' : date.min.isoformat(), 
   'num_likes' : 5, 
   'num_dislikes' : 7,
   'group_time' : 4
