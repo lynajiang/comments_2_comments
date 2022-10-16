@@ -13,7 +13,7 @@ import FormatItalic from '@mui/icons-material/FormatItalic';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Check from '@mui/icons-material/Check';
 
-const TextareaValidator = () => {
+const TypeComment = () => {
   const [italic, setItalic] = React.useState(false);
   const [fontWeight, setFontWeight] = React.useState('normal');
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -80,13 +80,13 @@ const TextareaValidator = () => {
             </IconButton>
             <Button sx={{ ml: 'auto' }}
               onClick={async () => {
-                const FLASK_ENDPOINT = "http://localhost:5000/"
+                const FLASK_ENDPOINT = "localhost:5000/"
                 const response = fetch(FLASK_ENDPOINT, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json"
                   },  
-                  body: JSON.stringify(text)
+                  body: JSON.stringify({'comment_data': text})
                   // implement timestamp
                 });
               }}>Send</Button>
@@ -102,4 +102,4 @@ const TextareaValidator = () => {
   );
 }
 
-export default TextareaValidator;
+export default TypeComment;
