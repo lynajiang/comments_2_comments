@@ -143,7 +143,7 @@ def create_table():
     id SERIAL PRIMARY KEY, 
     author STRING, 
     comment_data STRING, 
-    time_posted FLOAT, 
+    time_posted STRING, 
     num_likes INT, 
     num_dislikes INT,
     group_time INT
