@@ -1,6 +1,5 @@
 import './App.css';
-import TypeComment from './comment.js';
-import Comments from './update.js';
+import { Comments } from './update.js';
 import StyledPaper from './update.js';
 import message from './update.js';
 
@@ -13,7 +12,6 @@ function App() {
         <p>
           Comments 2 Comments
           <Comments></Comments>
-          <TypeComment></TypeComment>
         </p>
       </header>
     </div>
