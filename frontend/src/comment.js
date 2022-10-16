@@ -80,6 +80,9 @@ const TypeComment = () => {
             </IconButton>
             <Button sx={{ ml: 'auto' }}
               onClick={async () => {
+                const date = new Date();
+                const dateString = date.toISOString();
+                console.log(dateString);
                 const FLASK_ENDPOINT = "http://127.0.0.1:5646/"
                 const response = fetch(FLASK_ENDPOINT, {
                   method: "POST",
@@ -89,7 +92,7 @@ const TypeComment = () => {
                   body: JSON.stringify({
                     'author': "sue",
                     'comment_data': text,
-                    'time_posted': 12,
+                    'time_posted': dateString,
                     'num_likes': 5000,
                     'num_dislikes': 0,
                     'group_time': 10
