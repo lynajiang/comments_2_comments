@@ -18,11 +18,11 @@ cursor = connection.cursor()
 cursor.execute(
     "CREATE TABLE netflix_titles (show_id SERIAL PRIMARY KEY, \
     type STRING, title STRING, \
-    director STRING, cast STRING, \
+    director STRING, cast_cast STRING, \
     country STRING, rating FLOAT, release_year INT, duration STRING)"
 )
 
-with open("airbnbs.csv", "r") as f:
+with open("netflix_titles.csv", "r") as f:
     lines = f.readlines()
   
     # Print the column names
@@ -39,7 +39,7 @@ with open("airbnbs.csv", "r") as f:
          first_line[7], first_line[8], first_line[9])
 
         cursor.execute(
-            "INSERT INTO netflix_titles VALUES (%s, %s, %s, %s, %s, %s, %d, %d, %s)",
+            "INSERT INTO netflix_titles VALUES (%s, %s, %s, %s, %s, %s, %s, %d, %s)",
             (first_line[0], first_line[1], first_line[2], \
         first_line[3], first_line[4], first_line[5],
          first_line[7], first_line[8], first_line[9]))

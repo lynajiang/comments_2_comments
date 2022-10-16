@@ -160,8 +160,21 @@ def create_table_comments():
     """)
     return "ok"
 
-@app.route("/create_shows", methods=['GET'])
-@cross_origin()
+# @app.route("/create_shows", methods=['GET'])
+# @cross_origin()
+# def create_table_comments():
+#     cursor.execute("""
+#     CREATE TABLE comments (
+#     id SERIAL PRIMARY KEY, 
+#     author STRING, 
+#     comment_data STRING, 
+#     time_posted STRING, 
+#     num_likes INT, 
+#     num_dislikes INT,
+#     group_time INT
+#     );
+#     """)
+#     return "ok"
 
     
 # Runs the API and exposes it on https://<repl name>.<replit username>.repl.co

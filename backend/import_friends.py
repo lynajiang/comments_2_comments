@@ -22,7 +22,7 @@ cursor.execute(
     num_votes INT)"
 )
 
-with open("airbnbs.csv", "r") as f:
+with open("friends_episodes_v3.csv", "r", encoding="ISO-8859-1") as f:
     lines = f.readlines()
   
     # Print the column names
@@ -42,4 +42,4 @@ with open("airbnbs.csv", "r") as f:
             "INSERT INTO netflix_titles VALUES (%d, %d, %d, %s, %d, %s, %s, %s, %s, %d, %d)",
             (first_line[0], first_line[1], first_line[2], \
     first_line[3], first_line[4], first_line[5], first_line[6], \
-         first_line[7], first_line[8])
+         first_line[7], first_line[8]))
