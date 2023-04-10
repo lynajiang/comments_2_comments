@@ -45,9 +45,9 @@ const relativeTime = (current, previous) => {
     }
 }
 
-const minSec = (value) => {
-    return `${Math.floor(value / 60)}:${value % 60}`
-}
+// const everySec = () => {
+//     setTime(e.target.value + 1);
+// }
   
 const Comments = () => {
   const [italic, setItalic] = React.useState(false);
@@ -198,11 +198,9 @@ const message = async () => {
     <Box width={300}>
         <Slider
           onChange={(e)=>{
-              console.log(e.target.value)
             setTime((e.target.value))
             }
           }
-          step={1}
           aria-label="Time"
           defaultValue={0}
           valueLabelFormat={`${Math.floor(time / 60)}:${time % 60}`}

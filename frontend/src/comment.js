@@ -20,7 +20,7 @@ const TypeComment = () => {
   const [text, setText] = React.useState("");
   return (
     <FormControl>
-      <FormLabel>Your comment</FormLabel>
+      <FormLabel>Comment</FormLabel>
       <Textarea
         value={text}
         onChange={(e)=>setText(e.target.value)}
